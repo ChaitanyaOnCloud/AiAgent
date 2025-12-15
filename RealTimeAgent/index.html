@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RealTimeAgent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="chat-container">
+    <div id="messages"></div>
+    <form id="form">
+        <input id="input" placeholder="Ask weather, crypto, stock..." required />
+        <button>Send</button>
+    </form>
+</div>
+
+<script>
+const form = document.getElementById("form");
+const input = document.getElementById("input");
+const messages = document.getElementById("messages");
+
+form.onsubmit = async (e) => {
+    e.preventDefault();
+    const text = input.value;
+    messages.innerHTML += `<div class="user">${text}</div>`;
+    input.value = "";
+
+    const res = await fetch("/get_response", {
+        method:"POST",
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({message:text})
+    });
+    const data = await res.json();
+    messages.innerHTML += `<div class="bot">${data.reply}</div>`;
+};
+</script>
+</body>
+</html>
+
